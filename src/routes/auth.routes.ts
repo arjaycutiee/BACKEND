@@ -13,4 +13,12 @@ const registerSchema = z.object({
 
 router.post("/register", validate(registerSchema), authController.register);
 
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+
+router.post("/login", validate(loginSchema), authController.login);
+
+
 export default router;
