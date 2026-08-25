@@ -20,5 +20,10 @@ const loginSchema = z.object({
 
 router.post("/login", validate(loginSchema), authController.login);
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
+router.post("/forgot-password", validate(forgotPasswordSchema), authController.forgotPassword);
 
 export default router;

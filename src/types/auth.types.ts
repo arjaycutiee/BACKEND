@@ -19,14 +19,10 @@ export interface AuthUser {
   id: string;
   fullName: string;
   email: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface LoginResponse {
+  token: string;
+  refreshToken: string;
   user: AuthUser;
-  tokens: {
-    accessToken: string;
-    refreshToken: string;
-  };
-}
+}
