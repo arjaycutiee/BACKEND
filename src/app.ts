@@ -7,6 +7,7 @@ import expenseRoutes from "@/routes/expense.routes";
 import noteRoutes from "@/routes/note.routes";
 import userRoutes from "@/routes/user.routes";
 import dashboardRoutes from "@/routes/dashboard.routes";
+import aiRoutes from "@/routes/ai.routes";
 import { errorMiddleware } from "@/middleware/error.middleware";
 import { notFoundMiddleware } from "@/middleware/notFound.middleware";
 
@@ -26,6 +27,7 @@ app.use("/api/transactions", expenseRoutes);
 app.use("/api/notes", noteRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware); // dapat naa ni sa last
