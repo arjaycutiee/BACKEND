@@ -17,5 +17,119 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tasks        Task[]
+  events       CalendarEvent[]
+  transactions Transaction[]
+  notes        Note[]
+
   @@map("users")
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  subject     String   @default("General")
+  category    String // Academic | Personal | Projects | Exams | Activities
+  priority    String // High | Medium | Low
+  difficulty  String // Hard | Medium | Easy
+  duration    Float    @default(1) // hours
+  dueDate     String // YYYY-MM-DD
+  dueTime     String // HH:MM
+  completed   Boolean  @default(false)
+  hasReminder Boolean  @default(false)
+  repeat      String   @default("None") // None | Daily | Weekly | Monthly
+  isPinned    Boolean  @default(false)
+  isFavorite  Boolean  @default(false)
+  attachments Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subTasks SubTask[]
+
+  @@map("tasks")
+}
+
+model SubTask {
+  id        String  @id @default(cuid())
+  title     String
+  completed Boolean @default(false)
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("sub_tasks")
+}
+
+model CalendarEvent {
+  id             String   @id @default(cuid())
+  title          String
+  category       String // Assignment | Exam | Class | Meeting | Personal | AI Study
+  date           String // YYYY-MM-DD
+  time           String // HH:MM
+  duration       Int      @default(60) // minutes
+  priority       String   @default("Medium") // High | Medium | Low
+  isAllDay       Boolean  @default(false)
+  hasReminder    Boolean  @default(false)
+  reminderTime   String   @default("")
+  isRecurring    Boolean  @default(false)
+  recurrenceRule String   @default("") // "Daily" | "Weekly" | ""
+  progress       Int      @default(0) // 0 - 100
+  description    String?
+  isAIScheduled  Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checklist ChecklistItem[]
+
+  @@map("calendar_events")
+}
+
+model ChecklistItem {
+  id        String  @id @default(cuid())
+  text      String
+  completed Boolean @default(false)
+
+  eventId String
+  event   CalendarEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("checklist_items")
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  title     String
+  amount    Float
+  category  String // expense: Food, Transport, Academics, Others | income: Allowance, Job, Scholarship, Others
+  date      String // YYYY-MM-DD (frontend mock used "Today"/"Yesterday" - backend uses real dates)
+  type      String // income | expense
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+model Note {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   @default("")
+  category    String   @default("Personal") // School | Personal | Projects | Review | Ideas | Study Note
+  tags        String[] @default([])
+  isFavorite  Boolean  @default(false)
+  isPinned    Boolean  @default(false)
+  isArchived  Boolean  @default(false)
+  colorAccent String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notes")
 }
