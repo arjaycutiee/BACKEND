@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { z } from "zod";
 import * as noteController from "@/controllers/note.controller";
-import { authMiddleware } from "@/middleware/auth.middleware";
-import { validate } from "@/middleware/validation.middleware";
+import { authMiddleware } from "@/middlewares/authenticate-token";
+import { validate } from "@/middlewares/validate-schema";
 
 const router = Router();
 

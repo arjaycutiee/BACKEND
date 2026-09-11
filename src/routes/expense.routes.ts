@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { z } from "zod";
 import * as expenseController from "@/controllers/expense.controller";
-import { authMiddleware } from "@/middleware/auth.middleware";
-import { validate } from "@/middleware/validation.middleware";
+import { authMiddleware } from "@/middlewares/authenticate-token";
+import { validate } from "@/middlewares/validate-schema";
 
 const router = Router();
 
@@ -18,7 +18,11 @@ const transactionSchema = z.object({
 
 router.get("/", expenseController.getTransactions);
 router.get("/summary", expenseController.getSummary);
-router.post("/", validate(transactionSchema), expenseController.createTransaction);
+router.post(
+  "/",
+  validate(transactionSchema),
+  expenseController.createTransaction,
+);
 router.delete("/:id", expenseController.deleteTransaction);
 
 export default router;

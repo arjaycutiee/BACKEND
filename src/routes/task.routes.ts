@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { z } from "zod";
 import * as taskController from "@/controllers/task.controller";
-import { authMiddleware } from "@/middleware/auth.middleware";
-import { validate } from "@/middleware/validation.middleware";
+import { authMiddleware } from "@/middlewares/authenticate-token";
+import { validate } from "@/middlewares/validate-schema";
 
 const router = Router();
 
@@ -22,7 +22,9 @@ const taskSchema = z.object({
   priority: z.enum(["High", "Medium", "Low"]),
   difficulty: z.enum(["Hard", "Medium", "Easy"]),
   duration: z.coerce.number().min(0).default(1),
-  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dueDate must be YYYY-MM-DD"),
+  dueDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "dueDate must be YYYY-MM-DD"),
   dueTime: z.string().regex(/^\d{2}:\d{2}$/, "dueTime must be HH:MM"),
   completed: z.boolean().default(false),
   hasReminder: z.boolean().default(false),

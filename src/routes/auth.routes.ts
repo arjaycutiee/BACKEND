@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import * as authController from "@/controllers/auth.controller";
-import { validate } from "@/middleware/validation.middleware";
+import { validate } from "@/middlewares/validate-schema";
 
 const router = Router();
 
@@ -24,6 +24,10 @@ const forgotPasswordSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 
-router.post("/forgot-password", validate(forgotPasswordSchema), authController.forgotPassword);
+router.post(
+  "/forgot-password",
+  validate(forgotPasswordSchema),
+  authController.forgotPassword,
+);
 
 export default router;

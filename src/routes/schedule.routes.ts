@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { z } from "zod";
 import * as scheduleController from "@/controllers/schedule.controller";
-import { authMiddleware } from "@/middleware/auth.middleware";
-import { validate } from "@/middleware/validation.middleware";
+import { authMiddleware } from "@/middlewares/authenticate-token";
+import { validate } from "@/middlewares/validate-schema";
 
 const router = Router();
 
@@ -16,7 +16,14 @@ const checklistItemSchema = z.object({
 
 const eventSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  category: z.enum(["Assignment", "Exam", "Class", "Meeting", "Personal", "AI Study"]),
+  category: z.enum([
+    "Assignment",
+    "Exam",
+    "Class",
+    "Meeting",
+    "Personal",
+    "AI Study",
+  ]),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "date must be YYYY-MM-DD"),
   time: z.string().regex(/^\d{2}:\d{2}$/, "time must be HH:MM"),
   duration: z.coerce.number().int().min(0).default(60),
@@ -34,8 +41,15 @@ const eventSchema = z.object({
 
 router.get("/", scheduleController.getEvents);
 router.post("/", validate(eventSchema), scheduleController.createEvent);
-router.put("/:id", validate(eventSchema.partial()), scheduleController.updateEvent);
-router.patch("/:id/checklist/:itemId/toggle", scheduleController.toggleChecklistItem);
+router.put(
+  "/:id",
+  validate(eventSchema.partial()),
+  scheduleController.updateEvent,
+);
+router.patch(
+  "/:id/checklist/:itemId/toggle",
+  scheduleController.toggleChecklistItem,
+);
 router.delete("/:id", scheduleController.deleteEvent);
 
 export default router;
